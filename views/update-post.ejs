@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('includes/head', { title: post.title }) %>
+    <link rel="stylesheet" href="/styles/forms.css" />
+  </head>
+
+  <body>
+    <%- include('includes/header') %>
+    <main>
+      <h1>Update post</h1>
+      <form action="/post/<%= post._id %>/edit" method="post">
+        <div class="form-control">
+          <label for="title">title</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value="<%= post.title %>"
+            required
+          />
+        </div>
+        <div class="form-control">
+          <label for="summary">summary</label>
+          <input
+            type="text"
+            id="summary"
+            name="summary"
+            value="<%= post.summary %>"
+            required
+            maxlength="255"
+          />
+        </div>
+        <div class="form-control">
+          <label for="content">post content</label>
+          <textarea id="content" name="content" required rows="5">
+<%= post.content %></textarea
+          >
+        </div>
+        <button class="btn" type="submit">Update Post</button>
+      </form>
+    </main>
+  </body>
+</html>
