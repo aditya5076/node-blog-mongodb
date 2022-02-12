@@ -76,7 +76,6 @@ router.get("/post/:id", async (req, res, next) => {
     .collection("authors")
     .findOne({ _id: new ObjectId(post.author.id) }, { phone: 0 });
 
-  console.log(author);
   // post.date = post.date.toISOString();
   /* post.humanReadableDate = post.date.toLocaleDateString("en-US", {
     weekday: "long",
@@ -85,7 +84,7 @@ router.get("/post/:id", async (req, res, next) => {
     day: "numeric",
   }); */
 
-  res.render("post-detail", { post, author });
+  res.render("post-detail", { post, author, comments: null });
 });
 
 router.get("/post/:id/edit", async (req, res) => {
@@ -116,6 +115,43 @@ router.post("/post/:id/delete", async (req, res) => {
   const postId = new ObjectId(req.params.id);
   await db.getDb().collection("posts").deleteOne({ _id: postId });
   res.redirect("/posts");
+});
+
+router.get("/posts/:id/comments", async (req, res) => {
+  let postId = req.params.id;
+  try {
+    postId = new ObjectId(req.params.id);
+  } catch (error) {
+    return res.render("404");
+  }
+
+  const comments = await db
+    .getDb()
+    .collection("comments")
+    .find({
+      postId: postId,
+    })
+    .toArray();
+
+  return res.json(comments); //will encode the comments from db
+});
+
+router.post("/posts/:id/comments", async (req, res) => {
+  let postId = req.params.id;
+  try {
+    postId = new ObjectId(req.params.id);
+  } catch (error) {
+    return res.render("404");
+  }
+
+  await db.getDb().collection("comments").insertOne({
+    title: req.body.title,
+    text: req.body.text,
+    postId: postId,
+  });
+
+  // res.redirect("/post/" + req.params.id);
+  res.status(201).json({ message: "Comment Added" });
 });
 
 module.exports = router;

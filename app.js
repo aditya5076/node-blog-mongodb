@@ -11,7 +11,8 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.use(express.urlencoded({ extended: true })); // Parse incoming request bodies
+app.use(express.urlencoded({ extended: true })); // Parse incoming request bodies {for urlencoded/form-data type in postman}
+app.use(express.json()); //for raw type in postman
 app.use(express.static("public")); // Serve static files (e.g. CSS files)
 
 app.use(blogRoutes);
